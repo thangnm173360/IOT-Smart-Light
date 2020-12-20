@@ -5,7 +5,7 @@ import { Form, Input, Button, Checkbox, Row, Col } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import UserData from 'database/user.js';
 import { setCookie } from "utils/Cookie";
-import { Redirect, useHistory } from "react-router-dom";
+import { Link, Redirect, useHistory } from "react-router-dom";
 // import { Redirect, useHistory } from "react-router";
 const Background = `${process.env.PUBLIC_URL}/image/backgroundLogin.jpg`;
 const ImgLogin = `${process.env.PUBLIC_URL}/image/img_login.jpeg`;
@@ -109,7 +109,8 @@ function Login(props) {
               >
                 Log in
               </Button>
-              Or <a href="">register now!</a>
+              Or 
+              <Link to="/register">register now!</Link>
             </Form.Item>
           </Form>
         </Col>
