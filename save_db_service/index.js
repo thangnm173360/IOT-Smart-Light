@@ -47,7 +47,7 @@ const db = mongoose.connection;
 db.on('error', (error) => console.error(error));
 
 var client = mqtt.connect({
-	host: '52.229.154.12',
+	host: 'ithust.xyz',
 });
 
 client.on('connect', function () {
