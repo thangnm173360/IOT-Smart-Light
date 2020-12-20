@@ -46,7 +46,7 @@ async function getDeviceInRoom(req, res, next) {
     let device;
     try {
         device = await Device.find({
-            room: req.params.id
+            room_id: req.params.id
         });
 
         if (device == null) {
