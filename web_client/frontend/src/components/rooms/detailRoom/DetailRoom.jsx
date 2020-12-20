@@ -14,10 +14,20 @@ import {
 } from "react-icons/fa";
 import { SiApacheairflow } from "react-icons/si";
 import { GiDroplets } from "react-icons/gi";
+import { useEffect } from "react";
+import Axios from "axios";
 
 function DetailRoom(props) {
   const roomId = useParams().id;
-  console.log("test", roomId);
+  const token = localStorage.getItem('token');
+
+  useEffect(()=>{
+    Axios.get(`/rooms/${roomId}`,{headers: {Authorization: token}})
+    .then(res=>{
+      console.log("res ", res.data);
+    })
+    
+  },[]);
   return (
     <div className="detail-room">
       <Row>
