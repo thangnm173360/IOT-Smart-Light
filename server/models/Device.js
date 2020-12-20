@@ -7,7 +7,7 @@ const sensorSchema = new mongoose.Schema({
     name: {
         type: String,
     },
-    room: {
+    room_id: {
         type: Number,
     },
     status: {
