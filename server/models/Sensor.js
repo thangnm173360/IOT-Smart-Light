@@ -1,10 +1,6 @@
 const mongoose = require('mongoose');
 
 const sensorSchema = new mongoose.Schema({
-	humidityLand: {
-		type: Number,
-		required: true,
-	},
 	humidityAir: {
 		type: Number,
 		required: true,
