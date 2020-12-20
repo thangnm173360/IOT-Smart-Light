@@ -16,10 +16,10 @@ const route = (app) => {
 	app.use('/api/sensor', sensorRouter);
 
 	//Route device
-	app.use('/api/device', deviceRouter);
+	app.use('/devices', deviceRouter);
 
 	//Route room
-	app.use('/api/room', roomRouter);
+	app.use('/rooms', roomRouter);
 };
 
 module.exports = route;
