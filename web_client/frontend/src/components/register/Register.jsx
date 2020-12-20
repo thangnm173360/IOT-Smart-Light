@@ -18,6 +18,7 @@ import { QuestionCircleOutlined } from "@ant-design/icons";
 import { Container } from "@material-ui/core";
 import "./Register.css";
 import Axios from "axios";
+import { useHistory } from "react-router-dom";
 const { Option } = Select;
 const AutoCompleteOption = AutoComplete.Option;
 
@@ -55,17 +56,43 @@ const tailFormItemLayout = {
 function UserRegister(props) {
     const [form] = Form.useForm();
     const token = localStorage.getItem("token");
+    const history = useHistory();
 
     const onFinish = (values) => {
         console.log("Received values of form: ", values);
         let body = {
             "name": values.Username,
-            "phone": values.phone,
             "email": values.email,
-            "address": "Hà Nội",
-            "gender": values.gender,
-            "user_id": 2
-        }
+            "password": values.password,
+            "role": "admin",
+        };
+        console.log("body ", body)
+        Axios.post(`/api/auth/register`, body)
+        .then(res => {
+            console.log("res ", res.data);
+            notification.success({
+                message: "Register successfully!",
+                style: {
+                    borderRadius: 15,
+                    backgroundColor: "#b7eb8f",
+                },
+                duration: 2,
+            });
+            setTimeout(() => {
+                history.push("/login");
+            }, 500);
+        })
+        .catch(err => {
+            console.log("err ", err);
+            notification.error({
+                message: "Register fail!",
+                style: {
+                    borderRadius: 15,
+                    backgroundColor: "#fff2f0",
+                },
+                duration: 2,
+            });
+        })
         // Axios.post(`/api/customer/upload`, body, {headers: {"Authorization": token,}})
         // .then(res => {
         //     notification.success({
@@ -142,6 +169,32 @@ function UserRegister(props) {
                                     message:
                                         "The length should not exceed 50 characters!",
                                 },
+                                {
+                                    min: 6,
+                                    message:
+                                        "The length must not be less than 6 characters!",
+                                },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+
+                        <Form.Item
+                            name="email"
+                            label="E-mail"
+                            rules={[
+                                // {
+                                //     type: "email",
+                                //     message: "The input is not valid E-mail!",
+                                // },
+                                {
+                                    required: true,
+                                    message: "Please input your E-mail!",
+                                },
+                                {
+                                    pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                                    message: "The input is not valid E-mail!",
+                                },
                             ]}
                         >
                             <Input />
@@ -195,7 +248,7 @@ function UserRegister(props) {
                             <Input.Password />
                         </Form.Item>
 
-                        <Form.Item
+                        {/* <Form.Item
                             name="birthday"
                             label="Birthday"
                             rules={[
@@ -206,9 +259,9 @@ function UserRegister(props) {
                             ]}
                         >
                             <DatePicker />
-                        </Form.Item>
+                        </Form.Item> */}
 
-                        <Form.Item
+                        {/* <Form.Item
                             name="gender"
                             label="Gender"
                             hasFeedback
@@ -223,32 +276,11 @@ function UserRegister(props) {
                                 <Option value="male">Male</Option>
                                 <Option value="female">Female</Option>
                             </Select>
-                        </Form.Item>
+                        </Form.Item> */}
 
                         
 
-                        <Form.Item
-                            name="email"
-                            label="E-mail"
-                            rules={[
-                                // {
-                                //     type: "email",
-                                //     message: "The input is not valid E-mail!",
-                                // },
-                                {
-                                    required: true,
-                                    message: "Please input your E-mail!",
-                                },
-                                {
-                                    pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                                    message: "The input is not valid E-mail!",
-                                },
-                            ]}
-                        >
-                            <Input />
-                        </Form.Item>
-
-                        <Form.Item
+                        {/* <Form.Item
                             name="phone"
                             label="Phone Number"
                             rules={[
@@ -267,7 +299,7 @@ function UserRegister(props) {
                                     width: "100%",
                                 }}
                             />
-                        </Form.Item>
+                        </Form.Item> */}
 
                         
 
