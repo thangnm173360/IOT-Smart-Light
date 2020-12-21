@@ -1,9 +1,9 @@
 const express = require('express');
-const router = express.Router();
 const Room = require('../models/Room');
 const Device = require('../models/Device');
-const moment = require('moment');
 const auth = require('../middlewares/auth');
+
+const router = express.Router();
 
 // get all
 router.get('/', auth(['customer', 'admin']), async (req, res) => {
@@ -64,4 +64,3 @@ async function getDeviceInRoom(req, res, next) {
 }
 
 module.exports = router;
-0

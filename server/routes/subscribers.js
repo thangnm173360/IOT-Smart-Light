@@ -1,5 +1,3 @@
-//Example about restful api
-
 const express = require('express');
 const router = express.Router();
 const Subscriber = require('../models/Subscriber');
