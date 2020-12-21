@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const Device = require('../models/Device');
-const moment = require('moment');
 const auth = require('../middlewares/auth');
 
 // get all
@@ -64,4 +63,3 @@ async function getDevice(req, res, next) {
 }
 
 module.exports = router;
-0
