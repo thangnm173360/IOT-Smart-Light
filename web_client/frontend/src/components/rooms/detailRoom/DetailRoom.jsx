@@ -50,9 +50,9 @@ function DetailRoom(props) {
                                 <Switch
                                     checkedChildren="on"
                                     unCheckedChildren="off"
-                                    defaultChecked
+                                    checked={false}
                                 />
-                                <Meta title="Refridgerator" />
+                                <Meta title="Air Condition" />
                             </Card>
                         </Col>
                         <Col span={6}>
@@ -148,7 +148,7 @@ function DetailRoom(props) {
                             > */}
                                 {/* <div style={{ fontSize: 40 }}>30°C</div> */}
                                 
-                                <Pie percent={28} subTitle="temperature" total="28%" height={120} style={{marginTop: 0}} />
+                                <Pie percent={28} subTitle="T°" total="28°C" height={120} style={{marginTop: 0}} />
                             {/* </Card> */}
                         </Col>
                     </Row>
