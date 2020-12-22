@@ -40,3 +40,43 @@
     width: 97%;
     height: 400px;
 }
+
+.image-room{
+    margin-top: 15px;
+    height: 100%;
+    border-radius: 400px;
+}
+.image-room .ant-carousel{
+    height: 100%;
+}
+.carousel-1 {
+    background-image: url('./image/image1.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: "160px",
+}
+.carousel-2 {
+    background-image: url('./image/image2.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: "160px",
+}
+.carousel-3{
+    background-image: url('./image/image3.webp');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: "160px",
+}
+.carousel-4 {
+    background-image: url('./image/image4.jpeg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: "160px",
+}
+
+.antd-pro-charts-pie-pie {
+    position: absolute;
+    left: -160px;
+    top: -10px;
+}
+

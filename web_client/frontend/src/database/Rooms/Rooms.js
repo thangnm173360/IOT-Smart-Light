@@ -1,27 +1,27 @@
 export const rooms = [
     {
-        id: "1",
+        id: "2",
         name: "Living room",
         image: "LivingRoom",
     },
     {
-        id: "2",
+        id: "4",
         name: "Bed room",
         image: "BedRoom",
     },
     {
-        id: "3",
+        id: "1",
         name: "Kitchen room",
         image: "KitchenRoom",
     },
     {
-        id: "4",
+        id: "3",
         name: "Study room",
         image: "StudyRoom",
     },
-    {
-        id: "5",
-        name: "Balcony room",
-        image: "BalconyRoom",
-    },
+    // {
+    //     id: "5",
+    //     name: "Balcony room",
+    //     image: "BalconyRoom",
+    // },
 ]

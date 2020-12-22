@@ -10,7 +10,7 @@ import "./Rooms.css";
 // import imgModelHome from "image/model_home.jpg";
 
 import { roomList, imageRoom } from "database/Rooms/Roomsconfig";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 // import LivingRoom from "image/living_room.jpg";
 // import BedRoom from "image/bed_room.jpg";
@@ -28,7 +28,7 @@ const useStyles = makeStyles({
 const renderRooms = (classes, history) => {
   let rooms = roomList.map((room, index) => {
     return (
-      <Col span={8} key={room.id} >
+      <Col span={12} key={room.id} >
         <Card className={classes.root} onClick={()=>{history.push(`/rooms/${room.id}`)}}>
           <CardActionArea>
             <CardMedia
@@ -59,6 +59,7 @@ const renderRooms = (classes, history) => {
 function Rooms(props) {
   const classes = useStyles();
   const history = useHistory();
+  
   return (
     <div className="rooms">
       <Row>{renderRooms(classes, history)}</Row>
