@@ -6,7 +6,7 @@ const auth = require('../middlewares/auth');
 
 router.get('/', auth(['customer', 'admin']), async (req, res) => {
     try {
-        const result = await Sensor.find().sort({
+        const result = await Sensor.findOne().sort({
             field: 'asc',
             createdDate: -1
         });
