@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="af2c771e-4bd3-461d-9b22-ef25899f325f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/server/routes/sensor.js" beforeDir="false" afterPath="$PROJECT_DIR$/server/routes/sensor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/server/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +43,7 @@
       <updated>1608435328006</updated>
       <workItem from="1608435329131" duration="7495000" />
       <workItem from="1608646736461" duration="44000" />
-      <workItem from="1608646784010" duration="1996000" />
+      <workItem from="1608646784010" duration="2093000" />
     </task>
     <task id="LOCAL-00001" summary="edit API">
       <created>1608436857049</created>
