@@ -5,17 +5,17 @@ export const rooms = [
         image: "LivingRoom",
     },
     {
-        id: "4",
+        id: "1",
         name: "Bed room",
         image: "BedRoom",
     },
     {
-        id: "1",
+        id: "3",
         name: "Kitchen room",
         image: "KitchenRoom",
     },
     {
-        id: "3",
+        id: "4",
         name: "Study room",
         image: "StudyRoom",
     },
