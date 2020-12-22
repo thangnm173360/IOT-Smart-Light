@@ -7,7 +7,7 @@ const auth = require('../middlewares/auth');
 // get all
 router.get('/', auth(['customer', 'admin']), async (req, res) => {
     try {
-        const result = await Device.find().sort({
+        const result = await Device.findOne().sort({
             field: 'asc',
             _id: -1
         });
