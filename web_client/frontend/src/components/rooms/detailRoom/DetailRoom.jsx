@@ -302,9 +302,33 @@ function DetailRoom(props) {
                     </Row>
                     <Row className="detail-3">
                         <Col span={24}>
-                            <Card hoverable cover={<FaLightbulb size={50} />}>
+                            {/* <Card hoverable cover={<FaLightbulb size={50} />}>
                                 <div style={{ fontSize: 30 }}>Detail</div>
-                            </Card>
+                            </Card> */}
+                            <div className="info-room">
+                                <Row>
+                                    <Col span={24}>Detail of Room</Col>
+                                </Row>
+                                <Row>
+                                    <Col span={12}>Number of devices: 4</Col>
+                                    <Col span={12}>Power: 220 V</Col> 
+                                </Row>
+                                <Row>
+                                    <Col span={12}>Square: 50m</Col>
+                                    <Col span={12}>Ampe: 1,5 A</Col> 
+                                </Row>
+                                <Row>
+                                    <Col span={24}>Permisstion</Col>
+                                </Row>
+                                <Row>
+                                    <Col span={12}>Admins: 1</Col>
+                                    <Col span={12}>Rule : Control</Col> 
+                                </Row>       
+                                <Row>
+                                    <Col span={12}>Members: 2</Col>
+                                    <Col span={12}>Rule : Watch</Col> 
+                                </Row>                            
+                            </div>
                         </Col>
                     </Row>
                 </Col>
