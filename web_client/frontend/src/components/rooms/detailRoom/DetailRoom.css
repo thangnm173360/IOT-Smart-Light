@@ -80,3 +80,25 @@
     top: -10px;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+    .icon-air {
+      animation: App-logo-spin infinite 2s linear;
+    }
+  }
+  @keyframes App-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .antd-pro-charts-pie-total{
+    /* font-size: 20px; */
+  }
+  .antd-pro-charts-pie-pie .antd-pro-charts-pie-total > h4 {
+    
+    height: 10px;
+}
+
