@@ -1,13 +1,18 @@
+const mqtt = require('mqtt');
 const express = require('express');
 const router = express.Router();
 const Device = require('../models/Device');
 const moment = require('moment');
 const auth = require('../middlewares/auth');
 
+var client = mqtt.connect({
+	host: 'ithust.xyz',
+});
+
 // get all
 router.get('/', auth(['customer', 'admin']), async (req, res) => {
     try {
-        const result = await Device.findOne().sort({
+        const result = await Device.find().sort({
             field: 'asc',
             _id: -1
         });
@@ -28,6 +33,11 @@ router.get('/:id', getDevice, (req, res) => {
 router.patch('/:id', getDevice, async (req, res) => {
     if (req.body.status != null) {
         req.device.status = req.body.status;
+        // console.log("ahihi");
+        client.publish(
+            'helo',req.params.id+"-"+req.body.status
+        );
+        console.log(req.params.id+"-"+req.body.status);
     }
 
     try {

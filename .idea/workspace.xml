@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="af2c771e-4bd3-461d-9b22-ef25899f325f" name="Default Changelist" comment="" />
+    <list default="true" id="af2c771e-4bd3-461d-9b22-ef25899f325f" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web_client/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/web_client/frontend/package-lock.json" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -41,7 +44,9 @@
       <updated>1608435328006</updated>
       <workItem from="1608435329131" duration="7495000" />
       <workItem from="1608646736461" duration="44000" />
-      <workItem from="1608646784010" duration="2830000" />
+      <workItem from="1608646784010" duration="4779000" />
+      <workItem from="1608652643762" duration="2661000" />
+      <workItem from="1608693006318" duration="21000" />
     </task>
     <task id="LOCAL-00001" summary="edit API">
       <created>1608436857049</created>
@@ -86,10 +91,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="308" y="0" key="CommitChangelistDialog2/0.0.1366.738@0.0.1366.738" timestamp="1608445249990" />
-    <state x="463" y="124" key="FileChooserDialogImpl" timestamp="1608646778535">
+    <state x="463" y="124" key="FileChooserDialogImpl" timestamp="1608693002404">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="463" y="124" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1608646778535" />
+    <state x="463" y="124" key="FileChooserDialogImpl/0.0.1366.738@0.0.1366.738" timestamp="1608693002404" />
     <state x="275" y="102" key="Vcs.Push.Dialog.v2" timestamp="1608438249359">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
