@@ -109,4 +109,25 @@
     border-radius: 15px;
     height: 400px;
 }
+.lock{
+    display: flex;
+    
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+.icon-lock{
+    cursor: pointer;
+    position: absolute;
+    left: 60px;
+    bottom: 26px;
+}
+.title-detail{
+    text-align: center;
+    background-color: aqua;
+    border-radius: 15px;
+    width: 100px;
+    margin-top: 20px;
+    width: 92%;
+}
 
