@@ -12,7 +12,7 @@
 }
 .detail-room .ant-switch{
     margin-bottom: 10px;
-    left: 60px;
+    left: 22px;
     top: -18px;
 }
 .detail-room .ant-card-cover{
@@ -78,5 +78,35 @@
     position: absolute;
     left: -160px;
     top: -10px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .icon-air {
+      animation: App-logo-spin infinite 2s linear;
+    }
+  }
+  @keyframes App-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .antd-pro-charts-pie-total{
+    /* font-size: 20px; */
+  }
+  .antd-pro-charts-pie-pie .antd-pro-charts-pie-total > h4 {
+    
+    height: 10px;
+}
+
+.info-room{
+    box-shadow: 0 0.0625rem 20px 0 rgba(0, 0, 0, 0.2);
+    margin-top: 15px;
+    margin-left: 15px;
+    border-radius: 15px;
+    height: 400px;
 }
 

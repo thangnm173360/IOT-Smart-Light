@@ -1,7 +1,7 @@
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-import { Card, Carousel, Col, Row, Switch } from "antd";
+import { Card, Carousel, Col, notification, Row, Switch } from "antd";
 import Meta from "antd/lib/card/Meta";
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { deveiceList, icon } from "database/Deveices/DeveicesConfig";
 import "./DetailRoom.css";
@@ -13,10 +13,12 @@ import {
     FaTemperatureLow,
 } from "react-icons/fa";
 import { SiApacheairflow } from "react-icons/si";
-import { GiDroplets } from "react-icons/gi";
+import { GiDroplets, GiLightBulb } from "react-icons/gi";
+import { FaRegLightbulb } from "react-icons/fa";
 import { useEffect } from "react";
 import Axios from "axios";
 import { Pie, WaterWave } from "ant-design-pro/lib/Charts";
+import { light } from "@material-ui/core/styles/createPalette";
 
 const contentStyle = {
     height: "400px",
@@ -29,68 +31,199 @@ const contentStyle = {
 function DetailRoom(props) {
     const roomId = useParams().id;
     const token = localStorage.getItem("token");
+    const [lights, setLights] = useState([]);
+    const [airCondition, setAirCondition] = useState();
+    const [humidity, setHumidity] = useState();
+    const [temperature, setTemperature] = useState();
 
     useEffect(() => {
         Axios.get(`/rooms/${roomId}`, {
             headers: { Authorization: token },
         }).then((res) => {
-            console.log("res ", res.data);
+            let light = [];
+            res.data.map((item, index) => {
+                if (item.name === "Air Condition") {
+                    setAirCondition(item);
+                } else {
+                    light.push(item);
+                }
+            });
+            console.log("res ", light);
+            setLights(light);
         });
     }, []);
+    useEffect(() => {
+        Axios.get("/api/sensor", { headers: { Authorization: token } }).then(
+            (res) => {
+                console.log("data ", res.data);
+                setHumidity(res.data.humidityAir);
+                setTemperature(res.data.temperature);
+            }
+        );
+    }, []);
+
+    const onChange = (id, checked, event) => {
+        console.log("checked ", id, checked, event);
+        let status = "off";
+        if (checked === true) {
+            status = "on";
+        } else {
+            status = "off";
+        }
+
+        Axios.patch(
+            `/devices/${id}`,
+            { status: status },
+            { headers: { Authorization: token } }
+        )
+            .then((res) => {
+                console.log("resp ", res.data);
+                if (id === airCondition.id) {
+                    setAirCondition(res.data);
+                } else {
+                    let tmp = lights.map((item) => item);
+                    let index = findById(id, lights);
+                    tmp[index].status = status;
+                    console.log("tmp ", tmp);
+                    setLights(tmp);
+                }
+
+                if (res.data.status === "on") {
+                    notification.success({
+                        message: "Turn on device successfully!",
+                        style: {
+                            borderRadius: 15,
+                            backgroundColor: "#b7eb8f",
+                        },
+                        duration: 2,
+                    });
+                } else {
+                    notification.success({
+                        message: "Turn off device successfully!",
+                        style: {
+                            borderRadius: 15,
+                            backgroundColor: "#b7eb8f",
+                        },
+                        duration: 2,
+                    });
+                }
+            })
+            .catch((err) => {
+                notification.error({
+                    message: "server has an error!",
+                    style: {
+                        borderRadius: 15,
+                        backgroundColor: "#fff2f0",
+                    },
+                    duration: 2,
+                });
+            });
+    };
+
+    const findById = (id, arr) => {
+        let index = -1;
+        arr.map((item, i) => {
+            if (item.id === id) {
+                index = i;
+            }
+        });
+        return index;
+    };
+
     return (
         <div className="detail-room">
             <Row>
                 <Col span={16}>
                     <Row>
                         <Col span={6}>
-                            <Card
-                                hoverable
-                                cover={<CgSmartHomeRefrigerator size={50} />}
-                            >
-                                <Switch
-                                    checkedChildren="on"
-                                    unCheckedChildren="off"
-                                    checked={false}
-                                />
-                                <Meta title="Air Condition" />
-                            </Card>
+                            {airCondition === undefined ? (
+                                ""
+                            ) : (
+                                <Card
+                                    hoverable
+                                    // cover={<CgSmartHomeRefrigerator size={50} />}
+                                    cover={<SiApacheairflow size={50} color="#518e1a" className={airCondition.status === "on"?"icon-air":""} />}
+                                >
+                                    <Switch
+                                        checkedChildren="on"
+                                        unCheckedChildren="off"
+                                        checked={
+                                            airCondition.status === "on"
+                                                ? true
+                                                : false
+                                        }
+                                        onChange={(checked, event) =>
+                                            onChange(
+                                                airCondition.id,
+                                                checked,
+                                                event
+                                            )
+                                        }
+                                    />
+                                    <Meta title={airCondition.name} />
+                                </Card>
+                            )}
                         </Col>
-                        <Col span={6}>
+                        {/* <Col span={6}>
                             <Card
                                 hoverable
-                                cover={<FaTemperatureHigh size={50} />}
+                                // cover={<FaTemperatureHigh size={50} />}
+                                cover={<FaRegLightbulb size={50} />}
                             >
                                 <Switch
                                     checkedChildren="on"
                                     unCheckedChildren="off"
                                     defaultChecked
                                 />
-                                <Meta title="Temperature" />
+                                <Meta title="Floor lamp" />
                             </Card>
                         </Col>
                         <Col span={6}>
                             <Card
                                 hoverable
-                                cover={<SiApacheairflow size={50} />}
+                                // cover={<SiApacheairflow size={50} />}
+                                cover={<FaLightbulb size={50} />}
                             >
                                 <Switch
                                     checkedChildren="on"
                                     unCheckedChildren="off"
                                     defaultChecked
                                 />
-                                <Meta title="Air conditioner" />
+                                <Meta title="Track light" />
                             </Card>
-                        </Col>
-                        <Col span={6}>
-                            <Card hoverable cover={<FaLightbulb size={50} />}>
-                                <Switch
-                                    checkedChildren="on"
-                                    unCheckedChildren="off"
-                                    defaultChecked
-                                />
-                                <Meta title="Lights" />
-                            </Card>
-                        </Col>
+                        </Col> */}
+                        {lights.map((item, index) => {
+                            return (
+                                <Col span={6} key={index}>
+                                    <Card
+                                        hoverable
+                                        cover={<GiLightBulb size={54} color={
+                                            item.status === "on"
+                                                ? "#ece707"
+                                                : "black"
+                                        } />}
+                                    >
+                                        <Switch
+                                            checkedChildren="on"
+                                            unCheckedChildren="off"
+                                            checked={
+                                                item.status === "on"
+                                                    ? true
+                                                    : false
+                                            }
+                                            onChange={(checked, event) =>
+                                                onChange(
+                                                    item.id,
+                                                    checked,
+                                                    event
+                                                )
+                                            }
+                                        />
+                                        <Meta title={item.name} />
+                                    </Card>
+                                </Col>
+                            );
+                        })}
                     </Row>
                     {/* temp-3 */}
                     <Row className="temp-3">
@@ -134,29 +267,68 @@ function DetailRoom(props) {
                                 <div style={{ fontSize: 40 }}>20%</div>
                             </Card> */}
                             <div style={{ textAlign: "center" }}>
+                                {humidity === undefined ? (
+                                    ""
+                                ) : (
                                     <WaterWave
                                         height={96}
                                         title="humidity"
-                                        percent={30}
+                                        percent={humidity}
                                     />
-                                </div>
+                                )}
+                            </div>
                         </Col>
-                        <Col span={12} style={{position:'relative'}}>
+                        <Col span={12} style={{ position: "relative" }}>
                             {/* <Card
                                 hoverable
                                 // cover={<FaTemperatureLow size={50} />}
                             > */}
-                                {/* <div style={{ fontSize: 40 }}>30°C</div> */}
-                                
-                                <Pie percent={28} subTitle="T°" total="28°C" height={120} style={{marginTop: 0}} />
+                            {/* <div style={{ fontSize: 40 }}>30°C</div> */}
+
+                            {temperature === undefined ? (
+                                ""
+                            ) : (
+                                <Pie
+                                    percent={temperature}
+                                    subTitle="T°"
+                                    // total="28°C"
+                                    total={temperature + "°C"}
+                                    height={120}
+                                    style={{ marginTop: 0 }}
+                                />
+                            )}
                             {/* </Card> */}
                         </Col>
                     </Row>
                     <Row className="detail-3">
                         <Col span={24}>
-                            <Card hoverable cover={<FaLightbulb size={50} />}>
+                            {/* <Card hoverable cover={<FaLightbulb size={50} />}>
                                 <div style={{ fontSize: 30 }}>Detail</div>
-                            </Card>
+                            </Card> */}
+                            <div className="info-room">
+                                <Row>
+                                    <Col span={24}>Detail of Room</Col>
+                                </Row>
+                                <Row>
+                                    <Col span={12}>Number of devices: 4</Col>
+                                    <Col span={12}>Power: 220 V</Col> 
+                                </Row>
+                                <Row>
+                                    <Col span={12}>Square: 50m</Col>
+                                    <Col span={12}>Ampe: 1,5 A</Col> 
+                                </Row>
+                                <Row>
+                                    <Col span={24}>Permisstion</Col>
+                                </Row>
+                                <Row>
+                                    <Col span={12}>Admins: 1</Col>
+                                    <Col span={12}>Rule : Control</Col> 
+                                </Row>       
+                                <Row>
+                                    <Col span={12}>Members: 2</Col>
+                                    <Col span={12}>Rule : Watch</Col> 
+                                </Row>                            
+                            </div>
                         </Col>
                     </Row>
                 </Col>
