@@ -16,3 +16,9 @@ Content-Type: application/json
 
 ###
 
+ID :1  ----- Quạt phòng ngủ
+ID :2  ----- Đèn phòng khách  
+ID :3  ----- Đèn phòng khách 
+ID :6  ----- Đèn nhà bếp 
+ID :10 ----- Đèn phòng ngủ 
+ID :17 ----- Khóa cửa nhà bếp

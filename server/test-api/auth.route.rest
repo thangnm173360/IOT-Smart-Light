@@ -2,11 +2,12 @@ POST http://localhost:4000/api/auth/register
 Content-Type: application/json
 
 {
-    "name": "cuongdv",
-    "email": "pasestars@gmail.com",
-    "password": "cuongdv172986",
+    "name": "vietcong",
+    "email": "vietcong@gmail.com",
+    "password": "vietcong",
     "role": "admin"
 }
+
 
 ###
 
@@ -14,6 +15,6 @@ POST http://localhost:4000/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "pasestars@gmail.com",
-    "password": "cuongdv172986"
+    "email": "vietcong@gmail.com",
+    "password": "vietcong"
 }
