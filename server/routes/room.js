@@ -12,9 +12,10 @@ router.get('/', auth(['customer', 'admin']), async (req, res) => {
             field: 'asc',
             _id: -1
         });
-        return res.json(result);
+        return res.json({code: 200, rooms: result});
     } catch (error) {
         res.status(400).json({
+            code: 400,
             message: err.message
         });
     }
@@ -22,7 +23,7 @@ router.get('/', auth(['customer', 'admin']), async (req, res) => {
 
 // get device in room
 router.get('/:id', getDeviceInRoom, (req, res) => {
-    res.json(req.device);
+    res.status(200).json({code: 200, device: req.device});
 });
 
 //Updating one
@@ -51,11 +52,13 @@ async function getDeviceInRoom(req, res, next) {
 
         if (device == null) {
             return res.status(404).json({
+                code: 404,
                 message: 'Cannot find device'
             });
         }
     } catch (err) {
         return res.status(500).json({
+            code: 500,
             message: err.message
         });
     }

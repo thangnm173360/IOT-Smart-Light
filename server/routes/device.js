@@ -10,9 +10,10 @@ router.get('/', auth(['customer', 'admin']), async (req, res) => {
             field: 'asc',
             _id: -1
         });
-        return res.json(result);
+        return res.json({code: 200, devices: result});
     } catch (error) {
         res.status(400).json({
+            code: 400,
             message: err.message
         });
     }
@@ -34,6 +35,7 @@ router.patch('/:id', getDevice, async (req, res) => {
         res.json(updatedDevice);
     } catch (err) {
         res.status(400).json({
+            code: 400,
             message: err.message
         });
     }
@@ -49,11 +51,13 @@ async function getDevice(req, res, next) {
 
         if (device == null) {
             return res.status(404).json({
+                code: 404,
                 message: 'Cannot find subscriber'
             });
         }
     } catch (err) {
         return res.status(500).json({
+            code: 500,
             message: err.message
         });
     }

@@ -24,12 +24,6 @@ const userSchema = new mongoose.Schema({
 		enum: ['admin', 'customer'],
 		default: 'customer',
 	},
-	password: {
-		type: String,
-		required: true,
-		max: 128,
-		min: 6,
-	},
 	createdDate: {
 		type: Date,
 		default: Date.now,
