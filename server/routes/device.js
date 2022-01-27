@@ -10,13 +10,30 @@ var client = mqtt.connect({
 });
 
 // get all
-router.get('/', auth(['customer', 'admin']), async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const result = await Device.find().sort({
             field: 'asc',
             _id: -1
         });
         return res.json(result);
+    } catch (error) {
+        res.status(400).json({
+            message: err.message
+        });
+    }
+});
+
+// add device
+router.post('/', async (req, res) => {
+    try {
+        const deviceItem = req.body
+        const result = await Device.create(deviceItem);
+        return res.json({
+            code: "200",
+            message:  "Success",
+            result
+        });
     } catch (error) {
         res.status(400).json({
             message: err.message
@@ -33,16 +50,19 @@ router.get('/:id', getDevice, (req, res) => {
 router.patch('/:id', getDevice, async (req, res) => {
     if (req.body.status != null) {
         req.device.status = req.body.status;
-        // console.log("ahihi");
-        client.publish(
-            'helo',req.params.id+"-"+req.body.status
-        );
-        console.log(req.params.id+"-"+req.body.status);
     }
+
+    //     client.publish(
+    //         'helo',req.params.id+"-"+req.body.status
+    //     );
+    //     console.log(req.params.id+"-"+req.body.status);
+    // }
 
     try {
         const updatedDevice = await req.device.save();
-        res.json(updatedDevice);
+        res.json({code: "200",
+        message:  "Success",
+        updatedDevice});
     } catch (err) {
         res.status(400).json({
             message: err.message
@@ -55,7 +75,7 @@ async function getDevice(req, res, next) {
     let device;
     try {
         device = await Device.findOne({
-            id: req.params.id
+            _id: req.params.id
         });
 
         if (device == null) {
@@ -74,4 +94,3 @@ async function getDevice(req, res, next) {
 }
 
 module.exports = router;
-0

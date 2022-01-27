@@ -4,12 +4,26 @@ const Sensor = require('../models/Sensor');
 const moment = require('moment');
 const auth = require('../middlewares/auth');
 
-router.get('/', auth(['customer', 'admin']), async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const result = await Sensor.findOne().sort({
             field: 'asc',
             createdDate: -1
         });
+        return res.json({
+            code: "200",
+            message:  "Success",
+            sensor: result
+        });
+    } catch (error) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+router.post('/', async (req, res) => {
+    try {
+        const item = req.body
+        const result = await Sensor.create(item);
         return res.json(result);
     } catch (error) {
         res.status(400).json({ message: err.message });
