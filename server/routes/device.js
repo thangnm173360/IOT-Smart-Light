@@ -3,7 +3,8 @@ const express = require("express");
 const router = express.Router();
 const Device = require("../models/Device");
 const moment = require("moment");
-const auth = require("../middlewares/auth");
+
+var mqtt_topic_light_sub = "light";
 
 var client = mqtt.connect({
   host: "broker.mqttdashboard.com",
@@ -51,7 +52,7 @@ router.patch("/:id", getDevice, async (req, res) => {
   if (req.body.status != null) {
     req.device.status = req.body.status;
 
-    client.publish("helo", "1" + "-" + req.body.status);
+    client.publish(mqtt_topic_light_sub, req.params.id + "-" + req.body.status);
     console.log(req.params.id + "-" + req.body.status);
   }
   try {

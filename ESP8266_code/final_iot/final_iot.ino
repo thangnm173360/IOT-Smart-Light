@@ -10,6 +10,7 @@
 //#define password "gaohunter"
 #define ssid "Onii-chan"
 #define password "88888888"
+
 const long utcOffsetInSeconds = 25200;
 // Define NTP Client to get time
 WiFiUDP ntpUDP;
@@ -17,22 +18,23 @@ WiFiUDP ntpUDP;
 
 // Thông tin về MQTT Broker
 #define mqtt_server "broker.mqttdashboard.com" // Địa chỉ server
-#define mqtt_topic_pub "demo"   //Tạo topic tên là demo
-#define mqtt_topic_sub "helo"
+#define mqtt_topic_pub "dht"   //Tạo topic tên là demo
+#define mqtt_topic_sub_light "light"   //Tạo topic tên là light
+#define mqtt_topic_sub_room "room"   //Tạo topic tên là room
+
 
 const uint16_t mqtt_port = 1883; //Port của CloudMQTT
+
+// khai bao id thiet bi
+#define ID_LIGHT_1 "61f02aaca1b2061da0c15042"
+#define ID_LIGHT_2 "61f20b6bb388c021f4145322"
 
 //Khai báo chân của cảm biến nhiệt độ
 const int DHTTYPE = DHT11;
 const int DHTPIN = 5;
 #define ledPin 4
-//const int lamp1 = D2;
-//int infrareStatus = 0;
-//int statusLamp1 = 0, timerLamp1 = 0, checkLamp1 = 0;
-//int statusLamp2 = 0, checkLamp2 = 0;
-//int statusPan = 0, timerPan = 0, checkPan = 0;
-//int statusLock = 0, checkLock = 0;
-//long startLamp1, startPan;
+#define ledPin2 0
+
 DHT dht(DHTPIN, DHTTYPE);
 
 WiFiClient espClient;
@@ -41,23 +43,26 @@ PubSubClient client(espClient);
 long lastMsg = 0;
 char msg[50];
 
+int getDevice(String id) {
+  if (id == ID_LIGHT_1) return ledPin;
+  if (id == ID_LIGHT_2) return ledPin2;
+}
+
 void setup() {
   Serial.begin(115200);
   //set up wifi
   setup_wifi();
   //set up sensor
-  //  pinMode(D0, INPUT_PULLUP); // Đặt chân D0 để làm cổng đọc digital
-  //  pinMode(D6, INPUT_PULLUP);
-  //  pinMode(D2, OUTPUT); //Đặt chân D2 ở chế độ output
-  //  pinMode(D3, OUTPUT);
-  //  pinMode(D4, OUTPUT);
-  //  pinMode(D5, OUTPUT);
   pinMode(ledPin, OUTPUT); // Khai báo đèn id 1
+  pinMode(ledPin2, OUTPUT); // Khai báo đèn id 1
+
+
   dht.begin();
   //  timeClient.begin();
   //set up pubsub
   client.setServer(mqtt_server, mqtt_port);
   client.setCallback(callback);
+
 }
 
 // Hàm kết nối wifi
@@ -81,110 +86,92 @@ void setup_wifi() {
 
 // Hàm call back để nhận dữ liệu.
 void callback(char* topic, byte* payload, unsigned int length) {
-  //  Serial.println(topic);
-  //  if (strcmp(topic, "lamp1") == 0) {
-  //    char messing[200];
-  //    for (int i = 0; i < length; i++) {
-  //      messing[i] = payload[i];
-  //      //Serial.print(timer[i]);
-  //    }
-  //    StaticJsonBuffer<200> subscribes;
-  //    JsonObject& root = subscribes.parseObject(messing);
-  //    const char* status = root["Status"];
-
   String message = "";
-  String id = "";
   String status = "";
   boolean flagStatus = false;
   Serial.print("Message arrived [");
   Serial.print(topic);
-  Serial.print("] ");
-  for (int i = 0; i < length; i++)
-  {
-    char c = (char)payload[i];
-    Serial.print(c);
-    message.concat(c);
-    if (c == '-') {
-      flagStatus = true;
-      continue;
-    }
-    if (flagStatus) {
-      status.concat(c);
-    } else {
-      id.concat(c);
-    }
+  Serial.println("] ");
 
-  }
-  Serial.print(message);
-  int idint = atoi(id.c_str());
-
-  switch (idint) {
-    case 1:
-      if (status.equals("on")) {
-        digitalWrite(ledPin, HIGH);
-      } else {
-        digitalWrite(ledPin, LOW);
+  if (strcmp(topic, mqtt_topic_sub_light) == 0 ) {
+    String id = "";
+    for (int i = 0; i < length; i++)
+    {
+      char c = (char)payload[i];
+      Serial.print(c);
+      message.concat(c);
+      if (c == '-') {
+        flagStatus = true;
+        continue;
       }
-      break;
+      if (flagStatus) {
+        status.concat(c);
+      } else {
+        id.concat(c);
+      }
+
+    }
+    Serial.print(message);
+    if (status.equals("on")) {
+      digitalWrite(getDevice(id), HIGH);
+    } else {
+      digitalWrite(getDevice(id), LOW);
+    }
+  } else if (strcmp(topic, mqtt_topic_sub_room) == 0 ) {
+    String id = "";
+    String numberDeviceStr = "";
+    int i;
+    for (i = 0; i < length; i++) {
+      char c = (char)payload[i];
+      if (c == ':') {
+        break;
+      }
+      else {
+        numberDeviceStr.concat(c);
+      }
+    }
+    Serial.println(numberDeviceStr);
+    int numberDevice = atoi(numberDeviceStr.c_str());
+    String devices[numberDevice] ;
+    int indexDevice = 0;
+    for (i++; i < length; i++)
+    {
+      char c = (char)payload[i];
+//      Serial.print(c);
+      message.concat(c);
+      if ( c == ',') {
+        Serial.println(id);
+        devices[indexDevice] = id;
+        id = "";
+        indexDevice++;
+        continue;
+      }
+      if (c == '-') {
+        devices[indexDevice] = id;
+        Serial.println(id);
+        indexDevice++;
+        flagStatus = true;
+        continue;
+      }
+      if (flagStatus) {
+        status.concat(c);
+      } else {
+        id.concat(c);
+      }
+    }
+    for ( i = 0 ; i < numberDevice; i++) {
+      if (status.equals("on")) {
+        digitalWrite(getDevice(devices[i]), HIGH);
+      } else {
+        digitalWrite(getDevice(devices[i]), LOW);
+      }
+    }
   }
-  //    statusLamp1 = int(status[0] - 48);
-  //    Serial.println(statusLamp1);
-  //    char timer[20];
-  //    strcpy(timer, root["Timer"]);
-  //    timerLamp1 = 0;
-  //    for(int i = 0; timer[i] != '\0'; i++) {
-  //        timerLamp1 = timerLamp1*10 + int(timer[i] - 48);
-  //    }
-  //    Serial.println(timerLamp1);
-  //    checkLamp1 = 1;
-  //    startLamp1 = millis();
-  //  } else if (strcmp(topic, "lamp2") == 0) {
-  //    char messing[200];
-  //    for (int i = 0; i < length; i++) {
-  //      messing[i] = payload[i];
-  //      //Serial.print(timer[i]);
-  //    }
-  //    StaticJsonBuffer<200> subscribes;
-  //    JsonObject& root = subscribes.parseObject(messing);
-  //    const char* status = root["Status"];
-  //    statusLamp2 = int(status[0] - 48);
-  //    Serial.println(statusLamp2);
-  //    digitalWrite(D3, statusLamp2);
-  //  } else if (strcmp(topic, "lock") == 0) {
-  //    char messing[200];
-  //    for (int i = 0; i < length; i++) {
-  //      messing[i] = payload[i];
-  //      //Serial.print(timer[i]);
-  //    }
-  //    StaticJsonBuffer<200> subscribes;
-  //    JsonObject& root = subscribes.parseObject(messing);
-  //    const char* status = root["Status"];
-  //    statusLock = int(status[0] - 48);
-  //    Serial.println(statusLock);
-  //    digitalWrite(D4, statusLock);
-  //  } else if (strcmp(topic, "pan") == 0) {
-  //    char messing[200];
-  //    for (int i = 0; i < length; i++) {
-  //      messing[i] = payload[i];
-  //      //Serial.print(timer[i]);
-  //    }
-  //    StaticJsonBuffer<200> subscribes;
-  //    JsonObject& root = subscribes.parseObject(messing);
-  //    const char* status = root["Status"];
-  //    statusPan = int(status[0] - 48);
-  //    Serial.println(statusPan);
-  //    char timer[20];
-  //    strcpy(timer, root["Timer"]);
-  //    timerPan = 0;
-  //    for(int i = 0; timer[i] != '\0'; i++) {
-  //        timerPan = timerPan*10 + int(timer[i] - 48);
-  //    }
-  //    Serial.println(timerPan);
-  //    checkPan = 1;
-  //    startPan = millis();
+  Serial.print("Message: ");
+    Serial.println(message);
+
+
 }
-
-
 
 // Hàm reconnect thực hiện kết nối lại khi mất kết nối với MQTT Broker
 void reconnect() {
@@ -199,11 +186,8 @@ void reconnect() {
       // Khi kết nối sẽ publish thông báo
       client.publish(mqtt_topic_pub, "ESP_reconnected");
       // ... và nhận lại thông tin này
-      client.subscribe(mqtt_topic_sub);
-      client.subscribe("lamp1");
-      client.subscribe("lamp2");
-      client.subscribe("pan");
-      client.subscribe("lock");
+      client.subscribe(mqtt_topic_sub_light);
+      client.subscribe(mqtt_topic_sub_room);
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -223,29 +207,12 @@ void loop() {
 
   client.loop();
   long now = millis();
-  //  infrareStatus = digitalRead(D6);
-  //
-  //  if (infrareStatus == 0) {
-  //      digitalWrite(D3, 1);
-  //    }
-
-  //  if (checkLamp1 && (now - startLamp1 > timerLamp1*1000*60)) {
-  //      digitalWrite(D2, statusLamp1);
-  //      checkLamp1 = 0;
-  //    }
-  //
-  //   if (checkPan && (now - startPan > timerPan*1000*60)) {
-  //      digitalWrite(D5, statusPan);
-  //      checkPan = 0;
-  //    }
-
-
   if (now - lastMsg > 2000) {
     //đọc nhiệt độ, độ ẩm
     float h = dht.readHumidity();    //Đọc độ ẩm
     float t = dht.readTemperature(); //Đọc nhiệt độ
-    Serial.println(h);
-    Serial.println(t);
+    //    Serial.println(h);
+    //    Serial.println(t);
     delay(500);
 
     lastMsg = now;
