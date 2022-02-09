@@ -71,7 +71,11 @@ router.patch("/:id", getDeviceIdInRoom, async (req, res) => {
     req.device.forEach((element) => {
       updatedDevice = element.save();
     });
-    res.json(updatedDevice);
+    res.json({
+      code: "200",
+      message: "Success",
+      device: req.device,
+    });
   } catch (err) {
     res.status(400).json({
       message: err.message,
