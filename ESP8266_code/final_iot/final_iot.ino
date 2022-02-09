@@ -1,4 +1,3 @@
-//#include <NTPClient.h>
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <PubSubClient.h>
@@ -7,8 +6,10 @@
 #include <string.h>
 
 // Cập nhật thông tin wifi
-#define ssid "Tester"
-#define password "gaohunter"
+//#define ssid "Tester"
+//#define password "gaohunter"
+#define ssid "Onii-chan"
+#define password "88888888"
 const long utcOffsetInSeconds = 25200;
 // Define NTP Client to get time
 WiFiUDP ntpUDP;
@@ -24,6 +25,7 @@ const uint16_t mqtt_port = 1883; //Port của CloudMQTT
 //Khai báo chân của cảm biến nhiệt độ
 const int DHTTYPE = DHT11;
 const int DHTPIN = 5;
+#define ledPin 4
 //const int lamp1 = D2;
 //int infrareStatus = 0;
 //int statusLamp1 = 0, timerLamp1 = 0, checkLamp1 = 0;
@@ -50,6 +52,7 @@ void setup() {
   //  pinMode(D3, OUTPUT);
   //  pinMode(D4, OUTPUT);
   //  pinMode(D5, OUTPUT);
+  pinMode(ledPin, OUTPUT); // Khai báo đèn id 1
   dht.begin();
   //  timeClient.begin();
   //set up pubsub
@@ -78,73 +81,109 @@ void setup_wifi() {
 
 // Hàm call back để nhận dữ liệu.
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.println(topic);
-  if (strcmp(topic, "lamp1") == 0) {
-    char messing[200];
-    for (int i = 0; i < length; i++) {
-      messing[i] = payload[i];
-      //Serial.print(timer[i]);
+  //  Serial.println(topic);
+  //  if (strcmp(topic, "lamp1") == 0) {
+  //    char messing[200];
+  //    for (int i = 0; i < length; i++) {
+  //      messing[i] = payload[i];
+  //      //Serial.print(timer[i]);
+  //    }
+  //    StaticJsonBuffer<200> subscribes;
+  //    JsonObject& root = subscribes.parseObject(messing);
+  //    const char* status = root["Status"];
+
+  String message = "";
+  String id = "";
+  String status = "";
+  boolean flagStatus = false;
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
+  for (int i = 0; i < length; i++)
+  {
+    char c = (char)payload[i];
+    Serial.print(c);
+    message.concat(c);
+    if (c == '-') {
+      flagStatus = true;
+      continue;
     }
-    StaticJsonBuffer<200> subscribes;
-    JsonObject& root = subscribes.parseObject(messing);
-    const char* status = root["Status"];
-    //    statusLamp1 = int(status[0] - 48);
-    //    Serial.println(statusLamp1);
-    //    char timer[20];
-    //    strcpy(timer, root["Timer"]);
-    //    timerLamp1 = 0;
-    //    for(int i = 0; timer[i] != '\0'; i++) {
-    //        timerLamp1 = timerLamp1*10 + int(timer[i] - 48);
-    //    }
-    //    Serial.println(timerLamp1);
-    //    checkLamp1 = 1;
-    //    startLamp1 = millis();
-    //  } else if (strcmp(topic, "lamp2") == 0) {
-    //    char messing[200];
-    //    for (int i = 0; i < length; i++) {
-    //      messing[i] = payload[i];
-    //      //Serial.print(timer[i]);
-    //    }
-    //    StaticJsonBuffer<200> subscribes;
-    //    JsonObject& root = subscribes.parseObject(messing);
-    //    const char* status = root["Status"];
-    //    statusLamp2 = int(status[0] - 48);
-    //    Serial.println(statusLamp2);
-    //    digitalWrite(D3, statusLamp2);
-    //  } else if (strcmp(topic, "lock") == 0) {
-    //    char messing[200];
-    //    for (int i = 0; i < length; i++) {
-    //      messing[i] = payload[i];
-    //      //Serial.print(timer[i]);
-    //    }
-    //    StaticJsonBuffer<200> subscribes;
-    //    JsonObject& root = subscribes.parseObject(messing);
-    //    const char* status = root["Status"];
-    //    statusLock = int(status[0] - 48);
-    //    Serial.println(statusLock);
-    //    digitalWrite(D4, statusLock);
-    //  } else if (strcmp(topic, "pan") == 0) {
-    //    char messing[200];
-    //    for (int i = 0; i < length; i++) {
-    //      messing[i] = payload[i];
-    //      //Serial.print(timer[i]);
-    //    }
-    //    StaticJsonBuffer<200> subscribes;
-    //    JsonObject& root = subscribes.parseObject(messing);
-    //    const char* status = root["Status"];
-    //    statusPan = int(status[0] - 48);
-    //    Serial.println(statusPan);
-    //    char timer[20];
-    //    strcpy(timer, root["Timer"]);
-    //    timerPan = 0;
-    //    for(int i = 0; timer[i] != '\0'; i++) {
-    //        timerPan = timerPan*10 + int(timer[i] - 48);
-    //    }
-    //    Serial.println(timerPan);
-    //    checkPan = 1;
-    //    startPan = millis();
+    if (flagStatus) {
+      status.concat(c);
+    } else {
+      id.concat(c);
+    }
+
   }
+  Serial.print(message);
+  int idint = atoi(id.c_str());
+
+  switch (idint) {
+    case 1:
+      if (status.equals("on")) {
+        digitalWrite(ledPin, HIGH);
+      } else {
+        digitalWrite(ledPin, LOW);
+      }
+      break;
+  }
+  //    statusLamp1 = int(status[0] - 48);
+  //    Serial.println(statusLamp1);
+  //    char timer[20];
+  //    strcpy(timer, root["Timer"]);
+  //    timerLamp1 = 0;
+  //    for(int i = 0; timer[i] != '\0'; i++) {
+  //        timerLamp1 = timerLamp1*10 + int(timer[i] - 48);
+  //    }
+  //    Serial.println(timerLamp1);
+  //    checkLamp1 = 1;
+  //    startLamp1 = millis();
+  //  } else if (strcmp(topic, "lamp2") == 0) {
+  //    char messing[200];
+  //    for (int i = 0; i < length; i++) {
+  //      messing[i] = payload[i];
+  //      //Serial.print(timer[i]);
+  //    }
+  //    StaticJsonBuffer<200> subscribes;
+  //    JsonObject& root = subscribes.parseObject(messing);
+  //    const char* status = root["Status"];
+  //    statusLamp2 = int(status[0] - 48);
+  //    Serial.println(statusLamp2);
+  //    digitalWrite(D3, statusLamp2);
+  //  } else if (strcmp(topic, "lock") == 0) {
+  //    char messing[200];
+  //    for (int i = 0; i < length; i++) {
+  //      messing[i] = payload[i];
+  //      //Serial.print(timer[i]);
+  //    }
+  //    StaticJsonBuffer<200> subscribes;
+  //    JsonObject& root = subscribes.parseObject(messing);
+  //    const char* status = root["Status"];
+  //    statusLock = int(status[0] - 48);
+  //    Serial.println(statusLock);
+  //    digitalWrite(D4, statusLock);
+  //  } else if (strcmp(topic, "pan") == 0) {
+  //    char messing[200];
+  //    for (int i = 0; i < length; i++) {
+  //      messing[i] = payload[i];
+  //      //Serial.print(timer[i]);
+  //    }
+  //    StaticJsonBuffer<200> subscribes;
+  //    JsonObject& root = subscribes.parseObject(messing);
+  //    const char* status = root["Status"];
+  //    statusPan = int(status[0] - 48);
+  //    Serial.println(statusPan);
+  //    char timer[20];
+  //    strcpy(timer, root["Timer"]);
+  //    timerPan = 0;
+  //    for(int i = 0; timer[i] != '\0'; i++) {
+  //        timerPan = timerPan*10 + int(timer[i] - 48);
+  //    }
+  //    Serial.println(timerPan);
+  //    checkPan = 1;
+  //    startPan = millis();
 }
+
 
 
 // Hàm reconnect thực hiện kết nối lại khi mất kết nối với MQTT Broker
