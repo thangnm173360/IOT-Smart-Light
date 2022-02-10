@@ -1,1 +1,2 @@
-#Hướng dẫn
+# SmartHomeApp
+Android Studio 4
