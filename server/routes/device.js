@@ -65,6 +65,24 @@ router.patch("/:id", getDevice, async (req, res) => {
   }
 });
 
+//Updating one
+router.patch("/mode/:id", getDevice, async (req, res) => {
+  if (req.body.mode != null) {
+    req.device.mode = req.body.mode;
+
+    client.publish(mqtt_topic_light_sub, req.params.id + "-" + req.body.status);
+    console.log(req.params.id + "-" + req.body.mode);
+  }
+  try {
+    const updatedDevice = await req.device.save();
+    res.json({ code: "200", message: "Success", updatedDevice });
+  } catch (err) {
+    res.status(400).json({
+      message: err.message,
+    });
+  }
+});
+
 //Middleware to findById Device
 async function getDevice(req, res, next) {
   let device;

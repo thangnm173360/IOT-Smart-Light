@@ -1,20 +1,26 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const sensorSchema = new mongoose.Schema({
+const sensorSchema = new mongoose.Schema(
+  {
     type: {
-        type: Number,
+      type: Number,
     },
     name: {
-        type: String,
+      type: String,
     },
     room_id: {
-        type: Number,
+      type: Number,
     },
     status: {
-        type: String,
+      type: String,
     },
-}, {
-    timestamps: true
-});
+    mode: {
+      type: String,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-module.exports = mongoose.model('Device', sensorSchema);
+module.exports = mongoose.model("Device", sensorSchema);
