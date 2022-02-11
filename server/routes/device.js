@@ -29,7 +29,8 @@ router.get("/", async (req, res) => {
 // add device
 router.post("/", async (req, res) => {
   try {
-    const deviceItem = req.body;
+    deviceItem = req.body;
+    deviceItem.mode = "MANUAL";
     const result = await Device.create(deviceItem);
     return res.json({
       code: "200",
