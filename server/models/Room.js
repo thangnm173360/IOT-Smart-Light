@@ -1,13 +1,15 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const sensorSchema = new mongoose.Schema({
-    id: {
-        type: Number,
-    },
-    name: {
-        type: String,
-    },
-
+  id: {
+    type: Number,
+  },
+  name: {
+    type: String,
+  },
+  total_device: {
+    type: Number,
+  },
 });
 
-module.exports = mongoose.model('Room', sensorSchema);
+module.exports = mongoose.model("Room", sensorSchema);
