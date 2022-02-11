@@ -11,6 +11,11 @@ var client = mqtt.connect({
   host: "broker.mqttdashboard.com",
 });
 
+var MODE = {
+  MANUAL: "MANUAL",
+  AUTO: "AUTO",
+};
+
 // get all
 router.get("/", async (req, res) => {
   try {
