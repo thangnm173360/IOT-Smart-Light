@@ -10,6 +10,11 @@ var client = mqtt.connect({
   host: "broker.mqttdashboard.com",
 });
 
+var MODE = {
+  MANUAL: "MANUAL",
+  AUTO: "AUTO"
+}
+
 // get all
 router.get("/", async (req, res) => {
   try {
@@ -29,6 +34,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const deviceItem = req.body;
+    deviceItem.mode = MODE.MANUAL
     const result = await Device.create(deviceItem);
     return res.json({
       code: "200",
