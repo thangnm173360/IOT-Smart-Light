@@ -5,10 +5,16 @@ const Device = require("../models/Device");
 const moment = require("moment");
 
 var mqtt_topic_light_sub = "light";
+var mqtt_topic_light_mode_sub = "lightMode";
 
 var client = mqtt.connect({
   host: "broker.mqttdashboard.com",
 });
+
+var MODE = {
+  MANUAL: "MANUAL",
+  AUTO: "AUTO"
+}
 
 // get all
 router.get("/", async (req, res) => {
@@ -29,6 +35,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const deviceItem = req.body;
+    deviceItem.mode = MODE.MANUAL
     const result = await Device.create(deviceItem);
     return res.json({
       code: "200",
@@ -70,7 +77,10 @@ router.patch("/mode/:id", getDevice, async (req, res) => {
   if (req.body.mode != null) {
     req.device.mode = req.body.mode;
 
-    client.publish(mqtt_topic_light_sub, req.params.id + "-" + req.body.status);
+    client.publish(
+      mqtt_topic_light_mode_sub,
+      req.params.id + "-" + req.body.mode
+    );
     console.log(req.params.id + "-" + req.body.mode);
   }
   try {
