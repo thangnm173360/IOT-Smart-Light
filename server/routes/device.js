@@ -5,6 +5,7 @@ const Device = require("../models/Device");
 const moment = require("moment");
 
 var mqtt_topic_light_sub = "light";
+var mqtt_topic_light_mode_sub = "lightMode";
 
 var client = mqtt.connect({
   host: "broker.mqttdashboard.com",
@@ -70,7 +71,10 @@ router.patch("/mode/:id", getDevice, async (req, res) => {
   if (req.body.mode != null) {
     req.device.mode = req.body.mode;
 
-    client.publish(mqtt_topic_light_sub, req.params.id + "-" + req.body.status);
+    client.publish(
+      mqtt_topic_light_mode_sub,
+      req.params.id + "-" + req.body.mode
+    );
     console.log(req.params.id + "-" + req.body.mode);
   }
   try {
