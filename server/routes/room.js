@@ -16,7 +16,7 @@ var client = mqtt.connect({
 router.get("/", async (req, res) => {
   try {
     const result = await Room.find().sort({
-      field: "asc",
+      field: "desc",
       _id: -1,
     });
     return res.json({
