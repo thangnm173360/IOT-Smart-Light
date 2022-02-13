@@ -29,96 +29,49 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 
 // khai bao id thiet bi
-#define LIVING_ROOM_LIGHT_ID_1 "61f02aaca1b2061da0c15042"
-#define LIVING_ROOM_LIGHT_ID_2 "61f20b6bb388c021f4145322"
-#define LIVING_ROOM_LIGHT_ID_3 "62063468f0aba209c8df2938"
-#define LIVING_ROOM_LIGHT_ID_4 "6206744d13bd519e1cec062d"
-#define BATH_ROOM_LIGHT_ID_1 "62067a4313bd519e1cec062e"
-#define BATH_ROOM_LIGHT_ID_2 "6208be521a0e1581c31d06d5"
-#define BATH_ROOM_LIGHT_ID_3 "6208be5e1a0e1581c31d06d6"
-#define BED_ROOM_LIGHT_ID_1 "61f206b4cede7b34c08952ce"
-#define BED_ROOM_LIGHT_ID_2 "62067a7f13bd519e1cec0630"
-#define KITCHEN_LIGHT_ID_1 "62067a6213bd519e1cec062f"
-#define KITCHEN_LIGHT_ID_2 "62076d5213bd519e1cec0631"
 
-// Khai báo chân của cảm biến nhiệt độ
-const int DHTTYPE = DHT11;
-const int DHTPIN = 10 ; // D7
-DHT dht(DHTPIN, DHTTYPE); 
+#define BED_ROOM_LIGHT_ID_1 "6208bea41a0e1581c31d06db"
+#define BED_ROOM_LIGHT_ID_2 "6208beaf1a0e1581c31d06dc"
+#define KITCHEN_LIGHT_ID_1 "6208be061a0e1581c31d06cf"
+#define KITCHEN_LIGHT_ID_2 "6208be201a0e1581c31d06d0"
 
-// Khai báo chân cảm biến hồng ngoại
-int IRSensor = 16 ;// D8
-
-// living room
-#define ledLivingRoom1 13 // D7
-#define ledLivingRoom2 5  // D1
-#define ledLivingRoom3 4  // D2
-#define ledLivingRoom4 0  // D3
-// bathroom
-#define ledBathRoom1 2  // D4
-#define ledBathRoom2 14 // D5
-#define ledBathRoom3 12 // D6
 // bedroom
-//#define ledBedRoom1 13 // D7
-//#define ledBedRoom2 15 // D8
+#define ledBedRoom1 16 // D0
+#define ledBedRoom2 5 // D1
 
 // kitchen
-//#define ledKitchen1 3 
-//#define ledKitchen2 1
+#define ledKitchen1 4 //D2
+#define ledKitchen2 0 // D3
 
 long lastMsg = 0;
 char msg[50];
-String modePin1 = "MANUAL";
 
 int getDevice(String id)
 {
-  if (id == LIVING_ROOM_LIGHT_ID_1)
-    return ledLivingRoom1;
-  if (id == LIVING_ROOM_LIGHT_ID_2)
-    return ledLivingRoom2;
-  if (id == LIVING_ROOM_LIGHT_ID_3)
-    return ledLivingRoom3;
-  if (id == LIVING_ROOM_LIGHT_ID_4)
-    return ledLivingRoom4;
-  if (id == BATH_ROOM_LIGHT_ID_1)
-    return ledBathRoom1;
-  if (id == BATH_ROOM_LIGHT_ID_2)
-    return ledBathRoom2;
-  if (id == BATH_ROOM_LIGHT_ID_3)
-    return ledBathRoom3;
-//  if (id == BED_ROOM_LIGHT_ID_1)
-//    return ledBedRoom1;
-//  if (id == BED_ROOM_LIGHT_ID_2)
-//    return ledBedRoom2;
-//  if (id == KITCHEN_LIGHT_ID_1)
-//    return ledKitchen1;
-//  if (id == KITCHEN_LIGHT_ID_1)
-//    return ledKitchen2;
-return -1;
+
+  if (id == BED_ROOM_LIGHT_ID_1)
+    return ledBedRoom1;
+  if (id == BED_ROOM_LIGHT_ID_2)
+    return ledBedRoom2;
+  if (id == KITCHEN_LIGHT_ID_1)
+    return ledKitchen1;
+  if (id == KITCHEN_LIGHT_ID_2)
+    return ledKitchen2;
+  return -1;
 }
 
 void setup()
 {
-    Serial.begin(115200);
+  Serial.begin(115200);
   // set up wifi
   setup_wifi();
   // set up sensor
-  pinMode(ledLivingRoom1, OUTPUT); // Khai báo đèn id 1
-  pinMode(ledLivingRoom2, OUTPUT); // Khai báo đèn id 1
-  pinMode(ledLivingRoom3, OUTPUT); // Khai báo đèn id 1
-  pinMode(ledLivingRoom4, OUTPUT); // Khai báo đèn id 1
-  pinMode(ledBathRoom1, OUTPUT);   // Khai báo đèn id 1
-  pinMode(ledBathRoom2, OUTPUT);   // Khai báo đèn id 1
-  pinMode(ledBathRoom3, OUTPUT);   // Khai báo đèn id 1
-//  pinMode(ledBedRoom1, OUTPUT);    // Khai báo đèn id 1
-//  pinMode(ledBedRoom2, OUTPUT);    // Khai báo đèn id 1
-//  pinMode(ledKitchen1, OUTPUT);    // Khai báo đèn id 1
-//  pinMode(ledKitchen2, OUTPUT);    // Khai báo đèn id 1
 
-  pinMode(IRSensor, INPUT);
+  pinMode(ledBedRoom1, OUTPUT);    // Khai báo đèn id 1
+  pinMode(ledBedRoom2, OUTPUT);    // Khai báo đèn id 1
+  pinMode(ledKitchen1, OUTPUT);    // Khai báo đèn id 1
+  pinMode(ledKitchen2, OUTPUT);    // Khai báo đèn id 1
 
-  dht.begin();
-  //  timeClient.begin();
   // set up pubsub
   client.setServer(mqtt_server, mqtt_port);
   client.setCallback(callback);
@@ -250,31 +203,6 @@ void callback(char *topic, byte *payload, unsigned int length)
       }
     }
   }
-  else if (strcmp(topic, mqtt_topic_sub_light_mode) == 0)
-  {
-    String id = "";
-    for (int i = 0; i < length; i++)
-    {
-      char c = (char)payload[i];
-      Serial.print(c);
-      message.concat(c);
-      if (c == '-')
-      {
-        flagStatus = true;
-        continue;
-      }
-      if (flagStatus)
-      {
-        status.concat(c);
-      }
-      else
-      {
-        id.concat(c);
-      }
-    }
-    Serial.print(message);
-    modePin1 = status;
-  }
   Serial.print("Message: ");
   Serial.println(message);
 }
@@ -296,7 +224,6 @@ void reconnect()
       client.publish(mqtt_topic_pub, "ESP_reconnected");
       // ... và nhận lại thông tin này
       client.subscribe(mqtt_topic_sub_light);
-      client.subscribe(mqtt_topic_sub_light_mode);
       client.subscribe(mqtt_topic_sub_room);
     }
     else
@@ -319,39 +246,5 @@ void loop()
   }
 
   client.loop();
-  long now = millis();
-  if (now - lastMsg > 2000)
-  {
-    //đọc nhiệt độ, độ ẩm
-    float h = dht.readHumidity();    //Đọc độ ẩm
-    float t = dht.readTemperature(); //Đọc nhiệt độ
-//        Serial.println(h);
-//        Serial.println(t);
-    delay(500);
-
-    lastMsg = now;
-    StaticJsonBuffer<300> JSONbuffer;
-    JsonObject &JSONencoder = JSONbuffer.createObject();
-    JSONencoder["humidityAir"] = h;
-    JSONencoder["temperature"] = t;
-
-    char JSONmessageBuffer[100];
-    JSONencoder.printTo(JSONmessageBuffer, sizeof(JSONmessageBuffer));
-    client.publish(mqtt_topic_pub, JSONmessageBuffer);
-  }
   delay(20);
-
-  if (modePin1 == "AUTO")
-  {
-    int statusSensor = digitalRead(IRSensor);
-    if (statusSensor == HIGH)
-    {
-      digitalWrite(ledLivingRoom1, HIGH);
-      delay(3000);
-    }
-    else
-    {
-      digitalWrite(ledLivingRoom1, LOW);
-    }
-  }
 }
