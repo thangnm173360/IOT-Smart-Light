@@ -17,6 +17,12 @@ const sensorSchema = new mongoose.Schema(
     mode: {
       type: String,
     },
+    remote: {
+      type: Boolean,
+    },
+    position: {
+      type: Number,
+    },
   },
   {
     timestamps: true,

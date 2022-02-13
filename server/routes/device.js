@@ -34,9 +34,20 @@ router.get("/", async (req, res) => {
 // add device
 router.post("/", async (req, res) => {
   try {
-    deviceItem = req.body;
-    deviceItem.mode = "MANUAL";
-    const result = await Device.create(deviceItem);
+    console.log(req.body);
+    const result = await Device.updateOne(
+      {
+        room_id: req.body.room_id,
+        position: req.body.position + 1,
+      },
+      {
+        $set: {
+          name: req.body.name,
+          remote: true,
+        },
+      }
+    );
+
     return res.json({
       code: "200",
       message: "Success",
